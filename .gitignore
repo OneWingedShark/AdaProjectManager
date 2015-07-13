@@ -3,12 +3,10 @@
 
 # Ada Library Information
 *.ali
+ali/*,*
 
 # =========================
 # Operating System Files
-# =========================
-
-# OSX
 # =========================
 
 .DS_Store

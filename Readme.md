@@ -1,0 +1,9 @@
+# Ada Project Manager
+
+Ada Project Manager (APM) formally defines a language describing a project which uses the Ada programming language. Its purpose is the management, beyond Ada's language specification, of a set of sourcecode and configuration options/specifications.
+
+As an example, the F-22 has multiple microprocessors, but all of these are a part of a larger system. Where the Ada source-code may regard/model the system uniformly. That is to say, we may regard the entire system as a single program. We may also regard what portions are executed on the particular microcontrollers to be a single program as well, it is necessary to compile those portions of the source to execute on the microcontrollers as necessary. 
+
+In terms of the Ada programming language this is covered, briefly, by Annex E — the Distributed Systems Annex (DSA) — which refers to a program in terms of partitions and nodes. In such a model, a program at least one processing node (the portion[s] of the program which actually have a thread of control), and zero or more storage nodes (which could be a database-interface, for instance), which are configured/compiled via an external tool-chain so that in most cases there is no difference semantically between a single executible running on a multithreaded maching and multiple executables running on multiple processors.
+
+The goal of APM is to address that congicuration management, as well as the case of having multiple targets from the same source code. — While this is similar to a build management system, it is not concerned with finding files, retrieving them, and presenting them to the compiler (as a build system does), but with the managment of configurations for the compiler(s) to use.

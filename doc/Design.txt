@@ -1,0 +1,29 @@
+NOTE: This is a working design document.
+
+
+* Like Ada source files, the project explicitly "withs" its dependencies.
+* Like Ada packages types can be defined; unlike Ada these user-defined types are only enumerations.
+* Like Ada Generics, formal parameters may be values (of these enumerations).
+* Because the Project explicitly lists its dependencies, and because a project explicitly lists its parameters, it should be easy to make parameters transitive.
+  - Values may be assigned directly/explicitly (via := VALUE) to a parameter's definition.
+  - Transitive parameters are handled by the RENAMES variant of a parameter definition.
+  - Coalescing parameters is done via the CASE variant of a parameter definition.
+
+-------------
+-- Grammar --
+-------------
+--
+-- NOTE: @ as a prefix denotes comma-separated list.
+-------------------------------------------------------------------------------------------------
+Dependency_List			::= 'with' PROJECT_NAME [, PROJECT_NAME]* ;
+Used_Types				::= 'use' Type_List ;
+Type_List				::= PROJECT_NAME . TYPE_NAME [, PROJECT_NAME . TYPE_NAME]*
+Parameter_Formal_Part	::= 'parameter' Parameter_List
+Parameter_List			::= (identifier [, identifier] : TYPE_NAME 
+							[:= Initialization_Value
+							| 'renames' [PROJECT_NAME.]PARAMETER_NAME
+							| 'is' '(' 'case' [project_name.]parameter_name
+								@{'when' [PARAMETER_NAME'TYPE.]VALUE '=>' Initialization_Value}*
+								 ['when' 'others' '=>' Initialization_Value]
+								 ')'
+							])+;
