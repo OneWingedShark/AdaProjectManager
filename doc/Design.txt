@@ -9,6 +9,31 @@ NOTE: This is a working design document.
   - Transitive parameters are handled by the RENAMES variant of a parameter definition.
   - Coalescing parameters is done via the CASE variant of a parameter definition.
 
+--------------
+-- Examples --
+--------------
+
+Project Options is
+  Type Platform is ( Windows, OSX, Unix, Linux );
+End Options;
+  
+-- ...
+with Options;
+
+Parameter
+  Platform : Options.Platform;
+Project Example is
+    --- Partitions contain a list of packages,
+	--- One may be set as active, 
+    Partition Data   is  (DB_Interface);
+	Partition Server is  (Data, Objects, HAL)
+	with Active => HAL;
+	Partition Client is  (Data, User, IBM)
+	with Active => User;
+
+End Example;
+
+
 -------------
 -- Grammar --
 -------------
@@ -16,7 +41,7 @@ NOTE: This is a working design document.
 -- NOTE: @ as a prefix denotes comma-separated list.
 -------------------------------------------------------------------------------------------------
 Dependency_List			::= 'with' PROJECT_NAME [, PROJECT_NAME]* ;
-Used_Types				::= 'use' Type_List ;
+Used_Types				::= 'use' 'type' Type_List ;
 Type_List				::= PROJECT_NAME . TYPE_NAME [, PROJECT_NAME . TYPE_NAME]*
 Parameter_Formal_Part	::= 'parameter' Parameter_List
 Parameter_List			::= (identifier [, identifier] : TYPE_NAME 
