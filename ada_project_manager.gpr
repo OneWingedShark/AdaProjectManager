@@ -43,7 +43,7 @@ project Ada_Project_Manager is
       case Opentoken_Build is
 
          when "default" =>
-            for Default_Switches ("ada") use ("-gnato", "-fstack-check", "-gnatE", "-g", "-gnata", "-gnat12", "-gnatf", "-O3", "-gnatn");
+            for Default_Switches ("ada") use ("-gnato", "-fstack-check", "-g", "-gnata", "-gnat12", "-gnatf", "-O3", "-gnatn");
       end case;
    end Compiler;
 

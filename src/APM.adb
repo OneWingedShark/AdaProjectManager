@@ -8,9 +8,10 @@ Project_Manager.Master_Token.Production_List,
 OpenToken.Production.Parser.LALR.Generator,
 OpenToken.Production.Parser.LALR.Parser,
 OpenToken.Production.Parser.LALR.Parser_Lists,
-OpenToken.Production;
+OpenToken.Text_Feeder.Text_IO;
 
 With
+Interfaces,
 Ada.Text_IO;
 
 Procedure APM is
@@ -32,7 +33,7 @@ Procedure APM is
     Parse_Table : LALR_Package.Parse_Table_Ptr :=
      LALR_Generator.Generate(
 --          Known_Conflicts          => ,
-        Trace                    => True,
+--          Trace                    => True,
 --          Put_Parse_Table          => ,
         Ignore_Unknown_Conflicts => True,
         Ignore_Unused_Tokens     => True,
@@ -47,6 +48,7 @@ Procedure APM is
         Table                => Parse_Table
        );
 
+
    File_Name  : constant String := "Example.txt";
    Input_File : Ada.Text_IO.File_Type;
 begin
@@ -59,5 +61,15 @@ begin
                      Mode => Ada.Text_IO.In_File
                      );
 
+   SET_FEEDER:
+   Declare
+      Use Ada.Text_IO, OpenToken.Text_Feeder.Text_IO;
+   Begin
+      Set_Input(Input_File);
+      Test_Parser.Set_Text_Feeder( Create(Current_Input) );
+   End SET_FEEDER;
+
    Parser.Parse(Test_Parser);
+
+   Ada.Text_IO.Close(Input_File);
 End APM;

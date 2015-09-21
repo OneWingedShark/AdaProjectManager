@@ -2,10 +2,10 @@ With
 OpenToken.Token.List_Mixin,
 OpenToken.Token.Enumerated.Integer,
 
+     Project_Manager.Debugging.Print_Action,
      Project_Manager.Types,
      Project_Manager.Master_Token,
      Project_Manager.Tokenizer,
-     Project_Manager.Get_Syntax,
 
 Project_Manager.Master_Token.List_Instance,
 Project_Manager.Master_Token.Nonterminal_Instance,
@@ -35,11 +35,21 @@ Function Project_Manager.Get_Grammer return Project_Manager.Master_Token.Product
 --        Match.Value := Match.Value * Element.Value;
 --     end Times_Element;
 
-   d_is          : aliased Master_Token.class := Master_Token.Get(t_Is);
-   d_end         : aliased Master_Token.class := Master_Token.Get(t_End);
+   d_Project	: aliased Master_Token.class := Master_Token.Get(t_Project);
+   d_Is		: aliased Master_Token.class := Master_Token.Get(t_Is);
+   d_Type	: aliased Master_Token.class := Master_Token.Get(t_Type);
+   d_End	: aliased Master_Token.class := Master_Token.Get(t_End);
+   d_with	: aliased Master_Token.class := Master_Token.Get(t_with);
+   d_Comment	: aliased Master_Token.class := Master_Token.Get(t_Comment);
+      --Whitespace
+
    Name          : aliased Master_Token.class := Master_Token.Get(Types.Name);
-   Times         : aliased Master_Token.Class := Nonterminal.Get (p_Project);
-   Terminals     : constant Tokenizer.Syntax := Get_Syntax;
+
+
+--     procedure Print (Item : in Nonterminal_Instance.Synthesize) renames Debugging.Print_Action;
+--   procedure Print (Item : in Instance) is null;--renames Project_Manager.Debugging.Print_Instance.Print;
+     procedure Print (Item : in Production.Right_Hand_Side) is null; --renames Project_Manager.Debugging.Print_Instance.Print;
+
 
    package Nonterminals is
       nt_Prime                  : aliased Nonterminal.Class  := Nonterminal.Get (S_Prime);
@@ -60,7 +70,7 @@ Function Project_Manager.Get_Grammer return Project_Manager.Master_Token.Product
       EOF                   : aliased Master_Token.Class := Master_Token.Get (End_Of_File);
    end Nonterminals;
 
-
+--OpenToken.Production.Nonterminal.Token_List.Print.Print
    --use Production, Production_List, Nonterminal, Token_List;
    use type Token_List.Instance;
    use type Production.Right_Hand_Side;
@@ -69,8 +79,8 @@ Function Project_Manager.Get_Grammer return Project_Manager.Master_Token.Product
    use Nonterminals;
 Begin
    Return Grammar : constant Production_List.Instance:=
-     nt_Prime		<= nt_Start & EOF                       and
-     nt_Start           <= nt_project & Name & d_is & d_end;
+     nt_Prime		<= nt_Start & EOF                  + Master_Token.Nonterminal_Instance.Synthesize_Self     and
+     nt_Start           <= d_project & Name & d_is & d_end + Master_Token.Nonterminal_Instance.Synthesize_Self;
 --       Token		<= Punctuation				and
 --       Token		<= Whitespace				and
 --

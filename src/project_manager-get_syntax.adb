@@ -42,7 +42,6 @@ Function Project_Manager.Get_Syntax Return Project_Manager.Tokenizer.Syntax is
    Default : constant Tokenizer.Recognizable_Token:=
      Project_Manager.Tokenizer.Get (OpenToken.Recognizer.Nothing.Get);
 
-
 begin
    Return Result : constant Project_Manager.Tokenizer.Syntax :=
      (
