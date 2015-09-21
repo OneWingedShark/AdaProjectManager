@@ -1,0 +1,71 @@
+with "opentoken.gpr";
+
+project Ada_Project_Manager is
+
+   for Source_Dirs use ("src");
+   for Object_Dir use "obj";
+   for Exec_Dir use ".";
+   for Main use ("APM.adb");
+   type Build_Kind is
+      ("default");
+   Opentoken_Build : Build_Kind := external ("OPENTOKEN_BUILD");
+
+   package Ide is
+      for Vcs_Kind use "Git";
+      for Documentation_Dir use "doc";
+   end Ide;
+
+   package Naming is
+      for Spec_Suffix ("ada") use ".ads";
+      for Body_Suffix ("ada") use ".adb";
+      for Separate_Suffix use ".ada";
+      for Casing use "lowercase";
+      for Dot_Replacement use "-";
+   end Naming;
+
+   package Prove is
+      for Switches use ("-j4");
+   end Prove;
+
+   package Builder is
+      for Default_Switches ("ada") use ("-j4", "-g", "-C", "-s");
+
+      case Opentoken_Build is
+
+         when "default" =>
+            for Default_Switches ("ada") use ("-j4", "-g");
+      end case;
+   end Builder;
+
+   package Compiler is
+      for Default_Switches ("ada") use ("-gnato", "-fstack-check", "-gnatE", "-g", "-gnata", "-gnat12", "-gnatf", "-O3", "-fdata-sections", "-ffunction-sections", "-ftest-coverage", "-fprofile-arcs", "-gnatn");
+
+      case Opentoken_Build is
+
+         when "default" =>
+            for Default_Switches ("ada") use ("-gnato", "-fstack-check", "-gnatE", "-g", "-gnata", "-gnat12", "-gnatf", "-O3", "-gnatn");
+      end case;
+   end Compiler;
+
+   package Binder is
+      for Default_Switches ("ada") use ("-E", "-shared");
+
+      case Opentoken_Build is
+
+         when "default" =>
+            for Default_Switches ("ada") use ("-shared");
+      end case;
+   end Binder;
+
+   package Linker is
+      for Default_Switches ("ada") use ("-g", "-fprofile-generate");
+
+      case Opentoken_Build is
+
+         when "default" =>
+            for Default_Switches ("ada") use ("-g");
+      end case;
+   end Linker;
+
+end Ada_Project_Manager;
+

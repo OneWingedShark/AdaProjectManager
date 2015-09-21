@@ -2,12 +2,20 @@ NOTE: This is a working design document.
 
 
 * Like Ada source files, the project explicitly "withs" its dependencies.
-* Like Ada packages types can be defined; unlike Ada these user-defined types are only enumerations.
-* Like Ada Generics, formal parameters may be values (of these enumerations).
+* Like Ada packages types can be defined; unlike Ada these user-defined types are restricted to enumerations, and string subtypes.
+* Like Ada Generics, formal parameters may be values (of enumerations and user string-subtypes).
 * Because the Project explicitly lists its dependencies, and because a project explicitly lists its parameters, it should be easy to make parameters transitive.
   - Values may be assigned directly/explicitly (via := VALUE) to a parameter's definition.
   - Transitive parameters are handled by the RENAMES variant of a parameter definition.
   - Coalescing parameters is done via the CASE variant of a parameter definition.
+
+-----------------------
+-- Tool Requirements --
+-----------------------
+
+The tool must:
+(1)	provide a method for storing values for parameters; this is separate from the project-definition.
+(2)	provide a method for querying the user for parameter values in the case they are missing from the method in (1).
 
 --------------
 -- Examples --
@@ -23,14 +31,13 @@ with Options;
 Parameter
   Platform : Options.Platform;
 Project Example is
-    --- Partitions contain a list of packages,
-	--- One may be set as active, 
-    Partition Data   is  (DB_Interface);
+	-- Partitions contain a list of packages,
+	-- One may be set as active, this could also refer to a Task inside the specified package.
+	Partition Data   is  (DB_Interface);
 	Partition Server is  (Data, Objects, HAL)
 	with Active => HAL;
 	Partition Client is  (Data, User, IBM)
 	with Active => User;
-
 End Example;
 
 
@@ -48,7 +55,8 @@ Parameter_List			::= (identifier [, identifier] : TYPE_NAME
 							[:= Initialization_Value
 							| 'renames' [PROJECT_NAME.]PARAMETER_NAME
 							| 'is' '(' 'case' [project_name.]parameter_name
-								@{'when' [PARAMETER_NAME'TYPE.]VALUE '=>' Initialization_Value}*
-								 ['when' 'others' '=>' Initialization_Value]
-								 ')'
+								[Parameter_Case_Item]
+								['when' 'others' '=>' Initialization_Value]
+								')'
 							])+;
+Parameter_Case_Item		::= @('when' [PARAMETER_NAME'TYPE.]VALUE '=>' Initialization_Value)
