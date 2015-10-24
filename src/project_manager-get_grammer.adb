@@ -1,8 +1,12 @@
 With
+Ada.Text_IO,
+Project_Manager.Actions,
+OpenToken.Token.Sequence,
+OpenToken.Token.Selection,
 OpenToken.Token.List_Mixin,
 OpenToken.Token.Enumerated.Integer,
 
-     Project_Manager.Debugging.Print_Action,
+     Project_Manager.Debugging.Print_Value,
      Project_Manager.Types,
      Project_Manager.Master_Token,
      Project_Manager.Tokenizer,
@@ -43,18 +47,41 @@ Function Project_Manager.Get_Grammer return Project_Manager.Master_Token.Product
    d_Comment	: aliased Master_Token.class := Master_Token.Get(t_Comment);
       --Whitespace
 
-   Name          : aliased Master_Token.class := Master_Token.Get(Types.Name);
+   -- Token : in out Instance'Class
+   Procedure Build_Name( Token : in out Master_Token.Instance'Class ) is
+   Begin
+      Ada.Text_IO.Put_Line("!!!!!!!!! TEST !!!!!!!!!!");
+   End Build_Name;
+
+
+   Name          : aliased Master_Token.class := Master_Token.Get(Types.Name, "NAME", Build => Build_Name'Unrestricted_Access);
 
 
 --     procedure Print (Item : in Nonterminal_Instance.Synthesize) renames Debugging.Print_Action;
 --   procedure Print (Item : in Instance) is null;--renames Project_Manager.Debugging.Print_Instance.Print;
-     procedure Print (Item : in Production.Right_Hand_Side) is null; --renames Project_Manager.Debugging.Print_Instance.Print;
+--       procedure Print (Item : in Production.Right_Hand_Side) is null; --renames Project_Manager.Debugging.Print_Instance.Print;
+procedure Print  (New_Token :    out Nonterminal_Instance.Class;
+   Source    : in     List_Instance.Instance'Class;
+   To_ID     : in     Project_Manager.Types.Token_ID) renames Project_Manager.Debugging.Print_Value;
+
+   package Sequence	renames OpenToken.Token.Sequence;
+   package Selection	renames OpenToken.Token.Selection;
 
 
    package Nonterminals is
+      package Actions renames Project_Manager.Actions;
+
       nt_Prime                  : aliased Nonterminal.Class  := Nonterminal.Get (S_Prime);
       nt_Start                  : aliased Nonterminal.Class  := Nonterminal.Get (S_Start);
-      nt_Project                : aliased Nonterminal.Class  := Nonterminal.Get (p_Project);
+      nt_Project                : aliased Nonterminal.Class  := Nonterminal.Get (P_Project);
+
+      nt_Project_Header         : aliased Nonterminal.Class  := Nonterminal.Get (p_Project_Header);
+      nt_Project_Name           : aliased Nonterminal.Class  := Nonterminal.Get (p_Project_Name, Build => Actions.Set_Name'Access);
+      nt_Project_Body           : aliased Nonterminal.Class  := Nonterminal.Get (p_Project_Body);
+
+
+
+--      nt_Context_List           : aliased Nonterminal.Class  := Nonterminal.Token_List.Print.Print
 --        Specification         : aliased Nonterminal.Class  := Nonterminal.Get (p_Specification);
 --        Import_Declaration    : aliased Nonterminal.Class  := Nonterminal.Get (p_Import_Declaration);
 --        Structure_Declaration : aliased Nonterminal.Class  := Nonterminal.Get (p_Structure_Declaration);
@@ -79,18 +106,18 @@ Function Project_Manager.Get_Grammer return Project_Manager.Master_Token.Product
    use Nonterminals;
 Begin
    Return Grammar : constant Production_List.Instance:=
-     nt_Prime		<= nt_Start & EOF                  + Master_Token.Nonterminal_Instance.Synthesize_Self     and
-     nt_Start           <= d_project & Name & d_is & d_end + Master_Token.Nonterminal_Instance.Synthesize_Self;
---       Token		<= Punctuation				and
---       Token		<= Whitespace				and
---
---       Basic_Token	<= Keyword				and
---       Basic_Token	<= Name					and
---       Basic_Token	<= Integer_Type				and
---       Basic_Token	<= Rational_Type			and
---       Basic_Token	<= String_Type				and
---
---       Name;--	<= t_Colon & t_Equals;
---       --S_Prime       <= Specification & EOF and
---       --Specification <= EOF + Nonterminal.Synthesize_Self;
+     nt_Prime		<= nt_Start & EOF                  + Print'Access     and
+     nt_Start           <= nt_Project                                         and
+     nt_Project		<= nt_Project_Header & d_is & d_end + Master_Token.Nonterminal_Instance.Synthesize_Self and
+     nt_Project_Header	<= d_project & nt_Project_Name + Master_Token.Nonterminal_Instance.Synthesize_Self and
+--       nt_Project_Body	<= Master_Token.Nonterminal_Instance.Synthesize_Self and
+     nt_Project_Name	<= Name + Actions.Project_Name
+       --Master_Token.Nonterminal_Instance.Synthesize_Self
+       --Name + Print'Access
+
+   do
+      null;
+--        Nonterminal.Token_List.Print.Print(Grammar);
+--        Master_Token.List_Instance.Print( Grammar );
+   end return;
 End Project_Manager.Get_Grammer;

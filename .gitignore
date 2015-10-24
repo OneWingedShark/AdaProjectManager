@@ -3,7 +3,7 @@
 
 # Ada Library Information
 *.ali
-ali/*,*
+ali/*.*
 
 # =========================
 # Operating System Files
@@ -48,3 +48,6 @@ $RECYCLE.BIN/
 
 # Windows shortcuts
 *.lnk
+
+#Executables
+*.exe

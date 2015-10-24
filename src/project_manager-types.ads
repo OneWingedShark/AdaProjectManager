@@ -25,7 +25,15 @@ Package Project_Manager.Types with Pure is
 
                     S_Prime,
                     S_Start,
-                    p_Project
+                    p_Project,
+
+                    --------------------------
+                    --  AUX. NON-TERMINALS  --
+                    --------------------------
+
+                    p_Project_Header,
+                    p_Project_Name,
+                    p_Project_Body
 
                    );
 

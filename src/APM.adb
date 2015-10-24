@@ -1,4 +1,5 @@
 with
+Project_Manager.Actions,
 Project_Manager.Types,
 Project_Manager.Tokenizer,
 Project_Manager.Get_Grammer,
@@ -72,4 +73,13 @@ begin
    Parser.Parse(Test_Parser);
 
    Ada.Text_IO.Close(Input_File);
+
+   DEBUGGING:
+   declare
+      use Project_Manager.Actions;
+      Result : Result_Type renames Get_Result;
+   begin
+      Ada.Text_IO.Put_Line( "Name: " & Result.Name.Element );
+   end DEBUGGING;
+
 End APM;
